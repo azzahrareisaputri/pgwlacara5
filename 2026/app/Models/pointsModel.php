@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class polylinesModel extends Model
+class pointsModel extends Model
 {
-    protected $table = 'polylines';
-    protected $guarded = ['id'];
+    protected $table = 'points';
 
-    public static function getPolylines()
+    public static function getPoints()
     {
-        $polylines = DB::table('polylines')
+        $points = DB::table('points')
             ->select(
                 'id',
                 DB::raw('ST_AsGeoJSON(geom) as geojson'),
@@ -29,7 +28,7 @@ class polylinesModel extends Model
             'features' => []
         ];
 
-        foreach ($polylines as $p) {
+        foreach ($points as $p) {
             $feature = [
                 'type' => 'Feature',
                 'geometry' => json_decode($p->geojson),

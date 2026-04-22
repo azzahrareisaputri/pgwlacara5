@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class polylinesModel extends Model
+class rectanglesModel extends Model
 {
-    protected $table = 'polylines';
-    protected $guarded = ['id'];
+    protected $table = 'rectangles';
 
-    public static function getPolylines()
+    public static function getRectangles()
     {
-        $polylines = DB::table('polylines')
+        $rectangles = DB::table('rectangles')
             ->select(
                 'id',
                 DB::raw('ST_AsGeoJSON(geom) as geojson'),
@@ -29,17 +28,17 @@ class polylinesModel extends Model
             'features' => []
         ];
 
-        foreach ($polylines as $p) {
+        foreach ($rectangles as $r) {
             $feature = [
                 'type' => 'Feature',
-                'geometry' => json_decode($p->geojson),
+                'geometry' => json_decode($r->geojson),
                 'properties' => [
-                    'id' => $p->id,
-                    'name' => $p->name,
-                    'description' => $p->description,
-                    'image' => $p->image,
-                    'created_at' => $p->created_at,
-                    'updated_at' => $p->updated_at
+                    'id' => $r->id,
+                    'name' => $r->name,
+                    'description' => $r->description,
+                    'image' => $r->image,
+                    'created_at' => $r->created_at,
+                    'updated_at' => $r->updated_at
                 ]
             ];
 

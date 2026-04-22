@@ -212,6 +212,7 @@
 
 @section('scripts')
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 <script src="https://unpkg.com/@terraformer/wkt"></script>
@@ -235,11 +236,11 @@ var esriTopo = L.tileLayer(
 );
 
 // CONTROL
-L.control.layers({
-"OpenStreetMap":osm,
-"Esri Satellite":esriSat,
-"Esri Topographic":esriTopo
-}).addTo(map);
+var baseMaps = {
+    "OpenStreetMap": osm,
+    "Esri Satellite": esriSat,
+    "Esri Topographic": esriTopo
+};
 
 L.control.scale().addTo(map);
 
@@ -263,16 +264,11 @@ edit:{
 });
 map.addControl(drawControl);
 
-// ================= LOAD DATA DARI DB =================
-var polylines = @json($polylines);
 
-polylines.forEach(function(item){
-    var geojson = JSON.parse(item.geojson);
-    L.geoJSON(geojson).addTo(map);
-});
 
 // ================= DRAW =================
 var tempLayer = null;
+var polylineSubmitted = false;
 
 map.on('draw:created', function(e){
 
@@ -371,7 +367,7 @@ function showToast(message){
 // ================= VALIDATION =================
 
 // POINT
-document.querySelector('form[action="/points/store"]')
+document.querySelector('form[action*="points/store"]')
 .addEventListener('submit', function(e){
 
     var name = this.querySelector('[name="name"]').value;
@@ -391,7 +387,9 @@ document.querySelector('form[action="/points/store"]')
 });
 
 // POLYLINE
-document.querySelector('form[action="/polylines/store"]')
+
+// POLYLINE
+document.querySelector('form[action*="polylines/store"]')
 .addEventListener('submit', function(e){
 
     var name = this.querySelector('[name="name"]').value;
@@ -411,7 +409,8 @@ document.querySelector('form[action="/polylines/store"]')
 });
 
 // POLYGON
-document.querySelector('form[action="/polygons/store"]')
+// POLYGON
+document.querySelector('form[action*="polygons/store"]')
 .addEventListener('submit', function(e){
 
     var name = this.querySelector('[name="name"]').value;
@@ -431,7 +430,7 @@ document.querySelector('form[action="/polygons/store"]')
 });
 
 // RECTANGLE
-document.querySelector('form[action="/rectangles/store"]')
+document.querySelector('form[action*="rectangles/store"]')
 .addEventListener('submit', function(e){
 
     var name = this.querySelector('[name="name"]').value;
@@ -449,6 +448,79 @@ document.querySelector('form[action="/rectangles/store"]')
         return;
     }
 });
+
+var pointsLayer = L.geoJSON(null, {
+    pointToLayer: function(feature, latlng) {
+        return L.marker(latlng);
+    },
+    onEachFeature: function(feature, layer) {
+        layer.bindPopup(
+            "<b>" + feature.properties.name + "</b><br>" +
+            feature.properties.description
+        );
+    }
+});
+
+$.getJSON("/api/points", function(data){
+    console.log(data);
+    pointsLayer.addData(data);
+    pointsLayer.addTo(map);
+    map.fitBounds(pointsLayer.getBounds());
+});
+
+var polylinesLayer = L.geoJSON(null, {
+    onEachFeature: function(feature, layer) {
+        layer.bindPopup(
+            "<b>" + feature.properties.name + "</b><br>" +
+            feature.properties.description
+        );
+    }
+});
+
+$.getJSON("/api/polylines", function(data){
+    console.log(data);
+    polylinesLayer.addData(data);
+    polylinesLayer.addTo(map);
+});
+
+var polygonsLayer = L.geoJSON(null, {
+    onEachFeature: function(feature, layer) {
+        layer.bindPopup(
+            "<b>" + feature.properties.name + "</b><br>" +
+            feature.properties.description
+        );
+    }
+});
+
+$.getJSON("/api/polygons", function(data){
+    console.log(data);
+    polygonsLayer.addData(data);
+    polygonsLayer.addTo(map);
+});
+
+var rectanglesLayer = L.geoJSON(null, {
+    onEachFeature: function(feature, layer) {
+        layer.bindPopup(
+            "<b>" + feature.properties.name + "</b><br>" +
+            feature.properties.description
+        );
+    }
+});
+
+$.getJSON("/api/rectangles", function(data){
+    console.log(data);
+    rectanglesLayer.addData(data);
+    rectanglesLayer.addTo(map);
+});
+
+var overlayMaps = {
+    "Points": pointsLayer,
+    "Polylines": polylinesLayer,
+    "Polygons": polygonsLayer,
+    "Rectangles": rectanglesLayer
+};
+
+L.control.layers(baseMaps, overlayMaps).addTo(map);
 
 </script>
 
