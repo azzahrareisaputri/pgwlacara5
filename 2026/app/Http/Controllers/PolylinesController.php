@@ -37,14 +37,30 @@ class PolylinesController extends Controller
      */
     public function store(Request $request)
     {
-        DB::insert("
-            INSERT INTO polylines (name, description, geom)
-            VALUES (?, ?, ST_GeomFromText(?, 4326))
-        ", [
-            $request->name,
-            $request->description,
-            $request->geometry
-        ]);
+            // upload gambar
+    if($request->hasFile('image')){
+        $file = $request->file('image');
+        $filename = time().'_'.$file->getClientOriginalName();
+        $path = $file->storeAs('images', $filename, 'public');
+    } else {
+        $path = null;
+    }
+
+    $imagePath = null;
+
+if($request->hasFile('image')){
+    $imagePath = $request->file('image')->store('polylines', 'public');
+}
+
+    DB::insert("
+        INSERT INTO polylines (name, description, geom, image)
+        VALUES (?, ?, ST_GeomFromText(?, 4326), ?)
+    ", [
+        $request->name,
+        $request->description,
+        $request->geometry,
+        $imagePath
+    ]);
 
         return redirect()->back();
     }

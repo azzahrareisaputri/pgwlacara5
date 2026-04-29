@@ -11,22 +11,26 @@ class PointController extends Controller
 public function store(Request $request)
 {
 
-DB::insert("
+    // 🔽 PROSES UPLOAD GAMBAR
+    if($request->hasFile('image')){
+        $file = $request->file('image');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('images', $filename, 'public');
+    } else {
+        $path = null;
+    }
 
-INSERT INTO points (name,description,geom)
+    DB::insert("
+        INSERT INTO points (name, description, geom, image)
+        VALUES (?, ?, ST_GeomFromText(?,4326), ?)
+    ",[
+        $request->name,
+        $request->description,
+        $request->geometry,
+        $path
+    ]);
 
-VALUES
-
-(?,?,ST_GeomFromText(?,4326))
-
-",[
-$request->name,
-$request->description,
-$request->geometry
-]);
-
-return redirect()->back();
-
+    return redirect()->back();
 }
 
 }

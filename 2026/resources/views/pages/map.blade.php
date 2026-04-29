@@ -10,6 +10,7 @@
     height: calc(100vh - 80px);
     width:100%;
 }
+
 </style>
 
 @endsection
@@ -34,174 +35,237 @@
 </div>
 
 <!-- ================= POINT ================= -->
-<form action="{{ url('/points/store') }}" method="POST">
+<form action="{{ url('/points/store') }}" method="POST" enctype="multipart/form-data">
 @csrf
 
 <div class="modal fade" id="ModalInputPoint" tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-<div class="modal-header">
-    <h5 class="modal-title">Input Point</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h5 class="modal-title">Input Point</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" name="name" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" name="description"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Geometry</label>
+          <textarea class="form-control" id="geometry_point" name="geometry"></textarea>
+        </div>
+
+        <div class="mb-3">
+  <label class="form-label">Image</label>
+
+  <input type="file"
+    class="form-control"
+    name="image"
+    accept="image/*"
+    onchange="if(this.files[0]){
+      document.getElementById('preview-image-point').src = window.URL.createObjectURL(this.files[0])
+    }">
+
+  <img src="" id="preview-image-point" class="img-thumbnail mt-2" width="300">
 </div>
 
-<div class="modal-body">
+      </div>
 
-<div class="mb-3">
-    <label class="form-label">Name</label>
-    <input type="text" class="form-control" name="name" required>
-</div>
+      <!-- FOOTER (WAJIB DI DALAM modal-content) -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
 
-<div class="mb-3">
-    <label class="form-label">Description</label>
-    <textarea class="form-control" name="description"></textarea>
-</div>
-
-<div class="mb-3">
-    <label class="form-label">Geometry</label>
-    <textarea class="form-control" id="geometry_point" name="geometry"></textarea>
-</div>
-
-</div>
-
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary">Save</button>
-</div>
-
-</div>
-</div>
+    </div>
+  </div>
 </div>
 
 </form>
 
 
 <!-- ================= POLYLINE ================= -->
-<form action="{{ url('/polylines/store') }}" method="POST">
+<form action="{{ url('/polylines/store') }}" method="POST" enctype="multipart/form-data">
 @csrf
 
 <div class="modal fade" id="ModalInputPolyline" tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-<div class="modal-header">
-    <h5 class="modal-title">Input Polyline</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h5 class="modal-title">Input Polyline</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" name="name" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" name="description"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Geometry</label>
+          <textarea class="form-control" id="geometry_polyline" name="geometry"></textarea>
+        </div>
+
+        <div class="mb-3">
+  <label class="form-label">Image</label>
+
+  <input type="file"
+    class="form-control"
+    name="image"
+    accept="image/*"
+    onchange="if(this.files[0]){
+      document.getElementById('preview-image-polyline').src = window.URL.createObjectURL(this.files[0])
+    }">
+
+  <img src="" id="preview-image-polyline" class="img-thumbnail mt-2" width="300">
 </div>
 
-<div class="modal-body">
+      </div>
 
-<div class="mb-3">
-    <label class="form-label">Name</label>
-    <input type="text" class="form-control" name="name" required>
-</div>
+      <!-- FOOTER (SUDAH BENAR POSISI) -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
 
-<div class="mb-3">
-    <label class="form-label">Description</label>
-    <textarea class="form-control" name="description"></textarea>
-</div>
-
-<div class="mb-3">
-    <label class="form-label">Geometry</label>
-    <textarea class="form-control" id="geometry_polyline" name="geometry"></textarea>
-</div>
-
-</div>
-
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary">Save</button>
-</div>
-
-</div>
-</div>
+    </div>
+  </div>
 </div>
 
 </form>
 
 <!-- ================= POLYGON ================= -->
-<form action="{{ url('/polygons/store') }}" method="POST">
+<form action="{{ url('/polygons/store') }}" method="POST" enctype="multipart/form-data">
 @csrf
 
 <div class="modal fade" id="ModalInputPolygon" tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-<div class="modal-header">
-    <h5 class="modal-title">Input Polygon</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-</div>
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h5 class="modal-title">Input Polygon</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
-<div class="modal-body">
+      <!-- BODY -->
+      <div class="modal-body">
 
-<div class="mb-3">
-    <label class="form-label">Name</label>
-    <input type="text" class="form-control" name="name" required>
-</div>
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" name="name" required>
+        </div>
 
-<div class="mb-3">
-    <label class="form-label">Description</label>
-    <textarea class="form-control" name="description"></textarea>
-</div>
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" name="description"></textarea>
+        </div>
 
-<div class="mb-3">
-    <label class="form-label">Geometry</label>
-    <textarea class="form-control" id="geometry_polygon" name="geometry"></textarea>
-</div>
+        <div class="mb-3">
+          <label class="form-label">Geometry</label>
+          <textarea class="form-control" id="geometry_polygon" name="geometry"></textarea>
+        </div>
 
-</div>
+        <div class="mb-3">
+          <label class="form-label">Image</label>
 
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary">Save</button>
-</div>
+          <input type="file"
+            class="form-control"
+            name="image"
+            accept="image/*"
+            onchange="if(this.files[0]){
+              document.getElementById('preview-image-polygon').src = window.URL.createObjectURL(this.files[0])
+            }">
 
-</div>
-</div>
+          <img src="" id="preview-image-polygon" class="img-thumbnail mt-2" width="300">
+        </div>
+
+      </div>
+
+      <!-- FOOTER (SUDAH DI LUAR BODY) -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 </form>
 
 <!-- ================= RECTANGLE ================= -->
-<form action="{{ url('/rectangles/store') }}" method="POST">
+<form action="{{ url('/rectangles/store') }}" method="POST" enctype="multipart/form-data">
 @csrf
 
 <div class="modal fade" id="ModalInputRectangle" tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-<div class="modal-header">
-    <h5 class="modal-title">Input Rectangle</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header">
+                <h5 class="modal-title">Input Rectangle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" name="name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description"></textarea>
+                </div>
+
+                <label class="form-label">Geometry</label>
+                <textarea class="form-control" id="geometry_rectangle" name="geometry"></textarea>
+
+                <div class="mb-3">
+  <label class="form-label">Image</label>
+
+  <input type="file"
+    class="form-control"
+    name="image"
+    accept="image/*"
+    onchange="if(this.files[0]){
+      document.getElementById('preview-image-rectangle').src = window.URL.createObjectURL(this.files[0])
+    }">
+
+  <img src="" id="preview-image-rectangle" class="img-thumbnail mt-2" width="300">
 </div>
 
-<div class="modal-body">
+            </div>
 
-<div class="mb-3">
-    <label class="form-label">Name</label>
-    <input type="text" class="form-control" name="name" required>
-</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
 
-<div class="mb-3">
-    <label class="form-label">Description</label>
-    <textarea class="form-control" name="description"></textarea>
-</div>
-
-<div class="mb-3">
-    <label class="form-label">Geometry</label>
-    <textarea class="form-control" id="geometry_rectangle" name="geometry"></textarea>
-</div>
-
-</div>
-
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary">Save</button>
-</div>
-
-</div>
-</div>
+        </div>
+    </div>
 </div>
 
 </form>
@@ -216,11 +280,14 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 <script src="https://unpkg.com/@terraformer/wkt"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 
 // INIT MAP
-var map = L.map('map').setView([-7.7956,110.3695],10);
+var map = L.map('map', {
+    doubleClickZoom: false
+}).setView([-7.7956,110.3695],10);
 
 // BASEMAP
 var osm = L.tileLayer(
@@ -264,94 +331,88 @@ edit:{
 });
 map.addControl(drawControl);
 
+map.on('draw:drawstart', function () {
+    map.doubleClickZoom.disable();
+});
+
+map.on('draw:drawstop', function () {
+    map.doubleClickZoom.enable();
+});
 
 
-// ================= DRAW =================
-var tempLayer = null;
-var polylineSubmitted = false;
 
-map.on('draw:created', function(e){
 
+
+map.on('draw:created', function(e) {
     var type = e.layerType;
     var layer = e.layer;
 
-    tempLayer = layer;
+    var tempLayer = layer;
+    drawnItems.addLayer(layer);
 
     var geojson = layer.toGeoJSON();
-    var geometry = geojson.geometry;
-    var wkt = Terraformer.geojsonToWKT(geometry);
+    var wkt = Terraformer.geojsonToWKT(geojson.geometry);
 
-    // POINT
-    if(type === "marker"){
-        document.getElementById("geometry_point").value = wkt;
+    // Gunakan SWITCH CASE agar lebih rapi dan tidak bentrok
+    switch (type) {
+        case 'marker':
+            document.getElementById("geometry_point").value = wkt;
+            new bootstrap.Modal(document.getElementById('ModalInputPoint')).show();
+            break;
 
-        var modal = new bootstrap.Modal(document.getElementById('ModalInputPoint'));
-        modal.show();
-    }
+        case 'polyline':
+            document.getElementById("geometry_polyline").value = wkt;
+            new bootstrap.Modal(document.getElementById('ModalInputPolyline')).show();
+            break;
 
-    //POLYGONS
-    if(type === "polygon"){
-    document.getElementById("geometry_polygon").value = wkt;
+        case 'polygon':
+            document.getElementById("geometry_polygon").value = wkt;
+            new bootstrap.Modal(document.getElementById('ModalInputPolygon')).show();
+            break;
 
-    var modal3 = new bootstrap.Modal(document.getElementById('ModalInputPolygon'));
-    modal3.show();
-}
-
-    // RECTANGLE
-    if(type === "rectangle"){
-        document.getElementById("geometry_rectangle").value = wkt;
-
-        var modal4 = new bootstrap.Modal(document.getElementById('ModalInputRectangle'));
-        modal4.show();
-    }
-
-    // POLYLINE
-    if(type === "polyline"){
-        document.getElementById("geometry_polyline").value = wkt;
-
-        var modal2 = new bootstrap.Modal(document.getElementById('ModalInputPolyline'));
-        modal2.show();
+        case 'rectangle':
+            document.getElementById("geometry_rectangle").value = wkt;
+            // Rectangle sering butuh sedikit delay agar Leaflet selesai render
+            setTimeout(function() {
+                new bootstrap.Modal(document.getElementById('ModalInputRectangle')).show();
+            }, 200);
+            break;
     }
 });
 
-// CANCEL POINT
-document.getElementById('ModalInputPoint')
-.addEventListener('hidden.bs.modal', function () {
+// HAPUS LAYER JIKA MODAL DICANCEL / DITUTUP TANPA SAVE
+[
+    'ModalInputPoint',
+    'ModalInputPolyline',
+    'ModalInputPolygon',
+    'ModalInputRectangle'
+].forEach(function(modalId){
 
-    if(tempLayer){
-        drawnItems.removeLayer(tempLayer);
-        tempLayer = null;
-    }
+    var modalEl = document.getElementById(modalId);
 
-});
+    modalEl.addEventListener('hidden.bs.modal', function () {
 
-// CANCEL POLYGON
-document.getElementById('ModalInputPolygon')
-.addEventListener('hidden.bs.modal', function () {
+        // cek apakah form benar-benar disubmit atau hanya ditutup
+        var form = modalEl.closest('form');
 
-    if(tempLayer){
-        drawnItems.removeLayer(tempLayer);
-        tempLayer = null;
-    }
+        if (!form.dataset.submitted) {
+            drawnItems.eachLayer(function(layer){
+                drawnItems.removeLayer(layer);
+            });
+        }
 
-});
+        // reset flag submit
+        form.dataset.submitted = "";
 
-// CANCEL POLYLINE
-document.getElementById('ModalInputPolyline').addEventListener('hidden.bs.modal', function () {
-    if(tempLayer && !polylineSubmitted){
-        drawnItems.removeLayer(tempLayer); // hapus dari map
-        tempLayer = null;
-    }
-});
+        // kosongkan geometry
+        modalEl.querySelectorAll('textarea[name="geometry"]').forEach(function(el){
+            el.value = "";
+        });
+    });
 
-// CANCEL RECTANGLE
-document.getElementById('ModalInputRectangle')
-.addEventListener('hidden.bs.modal', function () {
-
-    if(tempLayer){
-        drawnItems.removeLayer(tempLayer);
-        tempLayer = null;
-    }
+    modalEl.closest('form').addEventListener('submit', function(){
+        this.dataset.submitted = "true";
+    });
 
 });
 
@@ -456,7 +517,8 @@ var pointsLayer = L.geoJSON(null, {
     onEachFeature: function(feature, layer) {
         layer.bindPopup(
             "<b>" + feature.properties.name + "</b><br>" +
-            feature.properties.description
+            feature.properties.description +
+            "<br><img src='/storage/" + feature.properties.image + "' width='200'>"
         );
     }
 });
@@ -468,14 +530,17 @@ $.getJSON("/api/points", function(data){
     map.fitBounds(pointsLayer.getBounds());
 });
 
-var polylinesLayer = L.geoJSON(null, {
-    onEachFeature: function(feature, layer) {
-        layer.bindPopup(
-            "<b>" + feature.properties.name + "</b><br>" +
-            feature.properties.description
-        );
-    }
-});
+    var polylinesLayer = L.geoJSON(null, {
+        onEachFeature: function(feature, layer) {
+            layer.bindPopup(
+                "<b>" + feature.properties.name + "</b><br>" +
+                feature.properties.description +
+                (feature.properties.image
+                    ? "<br><img src='/storage/" + feature.properties.image + "' width='200'>"
+                    : "")
+            );
+        }
+    });
 
 $.getJSON("/api/polylines", function(data){
     console.log(data);
@@ -487,7 +552,10 @@ var polygonsLayer = L.geoJSON(null, {
     onEachFeature: function(feature, layer) {
         layer.bindPopup(
             "<b>" + feature.properties.name + "</b><br>" +
-            feature.properties.description
+            feature.properties.description +
+            (feature.properties.image
+                ? "<br><img src='/storage/" + feature.properties.image + "' width='200'>"
+                : "")
         );
     }
 });
@@ -502,7 +570,10 @@ var rectanglesLayer = L.geoJSON(null, {
     onEachFeature: function(feature, layer) {
         layer.bindPopup(
             "<b>" + feature.properties.name + "</b><br>" +
-            feature.properties.description
+            feature.properties.description +
+            (feature.properties.image
+                ? "<br><img src='/storage/" + feature.properties.image + "' width='200'>"
+                : "")
         );
     }
 });
@@ -521,6 +592,10 @@ var overlayMaps = {
 };
 
 L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+setInterval(function(){
+    console.log("BACKDROP:", document.querySelectorAll('.modal-backdrop').length);
+}, 1000);
 
 </script>
 
