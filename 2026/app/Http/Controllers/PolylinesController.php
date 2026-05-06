@@ -109,6 +109,8 @@ if($request->hasFile('image')){
     {
         DB::delete("DELETE FROM polylines WHERE id = ?", [$id]);
 
-        return redirect()->back();
+        return response()->json([
+    'message' => 'Polyline deleted successfully'
+]);
     }
 }

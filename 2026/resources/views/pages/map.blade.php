@@ -4,6 +4,8 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 #map{
@@ -516,31 +518,50 @@ var pointsLayer = L.geoJSON(null, {
     },
     onEachFeature: function(feature, layer) {
         layer.bindPopup(
-            "<b>" + feature.properties.name + "</b><br>" +
-            feature.properties.description +
-            "<br><img src='/storage/" + feature.properties.image + "' width='200'>"
-        );
+    "<div style='width:250px'>" +
+        "<b>" + feature.properties.name + "</b><br>" +
+        feature.properties.description +
+
+        (feature.properties.image
+            ? "<br><img src='/storage/" + feature.properties.image + "' style='width:100%; margin-top:8px; border-radius:6px;'>"
+            : ""
+        ) +
+
+        "<br><button onclick='deletePoint(" + feature.properties.id + ")' class='btn btn-danger w-100 mt-2'>" +
+    "<i class='fa-solid fa-trash'></i>" +
+"</button>" +
+    "</div>"
+);
     }
 });
 
 $.getJSON("/api/points", function(data){
-    console.log(data);
     pointsLayer.addData(data);
     pointsLayer.addTo(map);
-    map.fitBounds(pointsLayer.getBounds());
+    if (pointsLayer.getLayers().length > 0) {  // ✅ cek dulu
+        map.fitBounds(pointsLayer.getBounds());
+    }
 });
 
     var polylinesLayer = L.geoJSON(null, {
-        onEachFeature: function(feature, layer) {
-            layer.bindPopup(
+    onEachFeature: function(feature, layer) {
+        layer.bindPopup(
+            "<div style='width:250px'>" +
                 "<b>" + feature.properties.name + "</b><br>" +
                 feature.properties.description +
+
                 (feature.properties.image
-                    ? "<br><img src='/storage/" + feature.properties.image + "' width='200'>"
-                    : "")
-            );
-        }
-    });
+                    ? "<br><img src='/storage/" + feature.properties.image + "' style='width:100%; margin-top:8px; border-radius:6px;'>"
+                    : ""
+                ) +
+
+                "<br><button onclick='deletePolyline(" + feature.properties.id + ")' class='btn btn-danger w-100 mt-2'>" +
+                    "<i class='fa-solid fa-trash'></i>" +
+                "</button>" +
+            "</div>"
+        );
+    }
+});
 
 $.getJSON("/api/polylines", function(data){
     console.log(data);
@@ -551,11 +572,19 @@ $.getJSON("/api/polylines", function(data){
 var polygonsLayer = L.geoJSON(null, {
     onEachFeature: function(feature, layer) {
         layer.bindPopup(
-            "<b>" + feature.properties.name + "</b><br>" +
-            feature.properties.description +
-            (feature.properties.image
-                ? "<br><img src='/storage/" + feature.properties.image + "' width='200'>"
-                : "")
+            "<div style='width:250px'>" +
+                "<b>" + feature.properties.name + "</b><br>" +
+                feature.properties.description +
+
+                (feature.properties.image
+                    ? "<br><img src='/storage/" + feature.properties.image + "' style='width:100%; margin-top:8px; border-radius:6px;'>"
+                    : ""
+                ) +
+
+                "<br><button onclick='deletePolygon(" + feature.properties.id + ")' class='btn btn-danger w-100 mt-2'>" +
+                    "<i class='fa-solid fa-trash'></i>" +
+                "</button>" +
+            "</div>"
         );
     }
 });
@@ -569,11 +598,19 @@ $.getJSON("/api/polygons", function(data){
 var rectanglesLayer = L.geoJSON(null, {
     onEachFeature: function(feature, layer) {
         layer.bindPopup(
-            "<b>" + feature.properties.name + "</b><br>" +
-            feature.properties.description +
-            (feature.properties.image
-                ? "<br><img src='/storage/" + feature.properties.image + "' width='200'>"
-                : "")
+            "<div style='width:250px'>" +
+                "<b>" + feature.properties.name + "</b><br>" +
+                feature.properties.description +
+
+                (feature.properties.image
+                    ? "<br><img src='/storage/" + feature.properties.image + "' style='width:100%; margin-top:8px; border-radius:6px;'>"
+                    : ""
+                ) +
+
+                "<br><button onclick='deleteRectangle(" + feature.properties.id + ")' class='btn btn-danger w-100 mt-2'>" +
+                    "<i class='fa-solid fa-trash'></i>" +
+                "</button>" +
+            "</div>"
         );
     }
 });
@@ -597,6 +634,113 @@ setInterval(function(){
     console.log("BACKDROP:", document.querySelectorAll('.modal-backdrop').length);
 }, 1000);
 
+function deletePoint(id) {
+    if(confirm("Are you sure you want to delete this data?")) {
+        fetch(`/points/${id}`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to delete point");
+            return res.json();
+        })
+        .then(data => {
+            showToast(data.message);
+            pointsLayer.clearLayers();
+            $.getJSON("/api/points", function(data){
+                pointsLayer.addData(data);
+            });
+        })
+        .catch(err => {
+            showToast(err.message + " ❌");
+        });
+    }
+}
+
+function deletePolyline(id) {
+    if(confirm("Are you sure you want to delete this data?")) {
+        fetch(`/polylines/${id}`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to delete polyline");
+            return res.json();
+        })
+        .then(data => {
+            showToast(data.message);
+            polylinesLayer.clearLayers();
+            $.getJSON("/api/polylines", function(data){  // ✅ fix: bukan /api/points
+                polylinesLayer.addData(data);
+            });
+        })
+        .catch(err => {
+            showToast(err.message + " ❌");
+        });
+    }
+}
+
+function deletePolygon(id) {
+    if(confirm("Are you sure you want to delete this data?")) {
+        fetch(`/polygons/${id}`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to delete polygon");
+            return res.json();
+        })
+        .then(data => {
+            showToast(data.message);
+            polygonsLayer.clearLayers();
+            $.getJSON("/api/polygons", function(data){
+                polygonsLayer.addData(data);
+            });
+        })
+        .catch(err => {
+            showToast(err.message + " ❌");
+        });
+    }
+}
+
+function deleteRectangle(id) {
+    if(confirm("Are you sure you want to delete this data?")) {
+        fetch(`/rectangles/${id}`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to delete rectangle");
+            return res.json();
+        })
+        .then(data => {
+            showToast(data.message);
+            rectanglesLayer.clearLayers();           // ✅ fix: bukan pointsLayer
+            $.getJSON("/api/rectangles", function(data){  // ✅ fix: bukan /api/points
+                rectanglesLayer.addData(data);
+            });
+        })
+        .catch(err => {
+            showToast(err.message + " ❌");
+        });
+    }
+}
 </script>
 
 @endsection

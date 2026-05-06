@@ -28,4 +28,14 @@ DB::insert("
 
         return redirect()->back();
     }
+
+    // ✅ TAMBAH INI
+    public function destroy(string $id)
+    {
+        DB::delete("DELETE FROM polygons WHERE id = ?", [$id]);
+
+        return response()->json([
+            'message' => 'Polygon deleted successfully'
+        ]);
+    }
 }

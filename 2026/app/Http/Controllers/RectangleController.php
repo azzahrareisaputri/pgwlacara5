@@ -28,4 +28,14 @@ DB::table('rectangles')->insert([
     return redirect('/peta')->with('success', 'Rectangle berhasil disimpan');
 }
 
+// ✅ TAMBAH INI
+    public function destroy(string $id)
+    {
+        DB::delete("DELETE FROM rectangles WHERE id = ?", [$id]);
+
+        return response()->json([
+            'message' => 'Rectangle deleted successfully'
+        ]);
+    }
+
 }

@@ -33,4 +33,14 @@ public function store(Request $request)
     return redirect()->back();
 }
 
+public function destroy(int $id)
+{
+    DB::delete("DELETE FROM points WHERE id = ?", [$id]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Point deleted successfully'
+    ]);
+}
+
 }
